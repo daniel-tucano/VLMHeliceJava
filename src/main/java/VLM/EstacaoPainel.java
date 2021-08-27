@@ -1,6 +1,7 @@
 package VLM;
 
 import Aerodinamica.Fluido;
+import GeometriaBase.Espaco.Direcao3D;
 import GeometriaBase.Espaco.Ponto3D;
 import GeometriaBase.Espaco.Vetor3D;
 import GeometriaBase.Espaco.Vetor3DBase;
@@ -19,6 +20,7 @@ import org.jzy3d.plot3d.rendering.view.AWTView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static util.MetodosEstaticos.linspace;
 
@@ -39,6 +41,12 @@ public class EstacaoPainel {
         List<Double> valoresDeXParaObterCamberAerofolioExterno = linspace(this.estacao.aerofolioExterno.curvaCamber.funcao2D.pontoMinimoX().x,this.estacao.aerofolioExterno.curvaCamber.funcao2D.pontoMaximoX().x,numeroDePaineisPorEstacao+1);
         List<Ponto3D> pontosCamberPerfilInterno = valoresDeXParaObterCamberAerofolioInterno.stream().map(x -> estacao.aerofolioInterno.curvaCamber.pontoInterpoladoEmEixoDeCoordenadasPrincipal(x)).collect(Collectors.toList());
         List<Ponto3D> pontosCamberPerfilExterno = valoresDeXParaObterCamberAerofolioExterno.stream().map(x -> estacao.aerofolioExterno.curvaCamber.pontoInterpoladoEmEixoDeCoordenadasPrincipal(x)).collect(Collectors.toList());
+        double cordaPainelAerofolioInterno = (this.estacao.aerofolioInterno.curvaCamber.funcao2D.pontoMaximoX().x - this.estacao.aerofolioInterno.curvaCamber.funcao2D.pontoMinimoX().x)/numeroDePaineisPorEstacao;
+        double cordaPainelAerofolioExterno = (this.estacao.aerofolioExterno.curvaCamber.funcao2D.pontoMaximoX().x - this.estacao.aerofolioExterno.curvaCamber.funcao2D.pontoMinimoX().x)/numeroDePaineisPorEstacao;
+        List<Double> valoresDeXParaObterVetorNormalACamberAerofolioInterno = IntStream.range(0, numeroDePaineisPorEstacao).mapToObj(index -> valoresDeXParaObterCamberAerofolioInterno.get(index) + cordaPainelAerofolioInterno*3/4).collect(Collectors.toList());
+        List<Double> valoresDeXParaObterVetorNormalACamberAerofolioExterno = IntStream.range(0, numeroDePaineisPorEstacao).mapToObj(index -> valoresDeXParaObterCamberAerofolioExterno.get(index) + cordaPainelAerofolioExterno*3/4).collect(Collectors.toList());
+        List<Vetor3D> vetoresNormaisACamberNoPontoDeControleAerofolioInterno = valoresDeXParaObterVetorNormalACamberAerofolioInterno.stream().map(x -> this.estacao.aerofolioInterno.curvaCamber.getDirecaoNormalEmEixoDeCoordenadasPrincipal(x).inverteSentido()).collect(Collectors.toList());
+        List<Vetor3D> vetoresNormaisACamberNoPontoDeControleAerofolioExterno = valoresDeXParaObterVetorNormalACamberAerofolioExterno.stream().map(x -> this.estacao.aerofolioExterno.curvaCamber.getDirecaoNormalEmEixoDeCoordenadasPrincipal(x).inverteSentido()).collect(Collectors.toList());
 
         this.pontoUmQuartoDaCorda = pontosCamberPerfilInterno.get(0).multiplicaCoordenadasPorEscalar(3.0)
                 .somaPonto3D(pontosCamberPerfilExterno.get(0).multiplicaCoordenadasPorEscalar(3.0))
@@ -53,7 +61,10 @@ public class EstacaoPainel {
             pontosPainel.add(pontosCamberPerfilExterno.get(i+1));
             pontosPainel.add(pontosCamberPerfilInterno.get(i+1));
 
-            this.paineis.add(Painel.constroiPainelHelice(pontosPainel,pontosCamberPerfilInterno.stream().skip(i+1).collect(Collectors.toList()),pontosCamberPerfilExterno.stream().skip(i+1).collect(Collectors.toList()),numeroDeFilamentosEsteira, estacao.eixoDeCoordenadasDeRotacao));
+            Direcao3D vetorNormalPontoDeControlePainel = vetoresNormaisACamberNoPontoDeControleAerofolioInterno.get(i)
+                    .somaVetor(vetoresNormaisACamberNoPontoDeControleAerofolioExterno.get(i)).direcao;
+
+            this.paineis.add(Painel.constroiPainelHelice(pontosPainel, vetorNormalPontoDeControlePainel, pontosCamberPerfilInterno.stream().skip(i+1).collect(Collectors.toList()),pontosCamberPerfilExterno.stream().skip(i+1).collect(Collectors.toList()),numeroDeFilamentosEsteira, estacao.eixoDeCoordenadasDeRotacao));
         }
     }
 
@@ -92,23 +103,23 @@ public class EstacaoPainel {
 
     public List<LineStrip> getLineStripsVetoresNormais() {
         List<LineStrip> lineStrips = new ArrayList<>();
-        this.paineis.forEach(p -> lineStrips.add(p.vetorNormal.escala(50.0).getLineStripSeta(Color.BLUE,1.0f)));
+        this.paineis.forEach(p -> lineStrips.add(p.vetorNormal.escala(0.03).getLineStripSeta(Color.BLUE,1.0f)));
         return lineStrips;
     }
 
-    public List<LineStrip> getLineStripsVetoresForcaPaineis() {
+    public List<LineStrip> getLineStripsVetoresForcaPaineis(Double escala) {
         List<LineStrip> lineStrips = new ArrayList<>();
-        this.paineis.forEach(painel -> lineStrips.add(painel.forca.getLineStripSeta(Color.BLACK,1.0f)));
+        this.paineis.forEach(painel -> lineStrips.add(painel.forca.escala(escala).getLineStripSeta(Color.BLACK,1.0f)));
         return lineStrips;
     }
 
     public List<LineStrip> getLineStripsVelocidadeLocalUmQuartoDoPainel() {
         List<LineStrip> lineStrips = new ArrayList<>();
-        this.paineis.forEach(painel -> lineStrips.add(painel.velocidadeLocalUmQuartoDoPainel.escala(1.0/100.0).getLineStripSeta(Color.GRAY,1.0f)));
+        this.paineis.forEach(painel -> lineStrips.add(painel.velocidadeLocalUmQuartoDoPainel.escala(1.0/500.0).getLineStripSeta(Color.GRAY,1.0f)));
         return lineStrips;
     }
 
-    public void plotPaineis(boolean wireframeDisplayed, boolean mostraVortices, boolean mostraVelocidadesLocais, boolean mostraForcasPaineis) {
+    public void plotPaineis(boolean wireframeDisplayed, boolean mostraVortices, boolean mostraVelocidadesLocais, boolean mostraForcasPaineis, Double escalaForca) {
         AWTChart chart = new AWTChart(Quality.Fastest);
         AWTView view = chart.getAWTView();
         Graph graph = chart.getScene().getGraph();
@@ -120,7 +131,7 @@ public class EstacaoPainel {
             graph.add(this.getLineStripsVelocidadeLocalUmQuartoDoPainel());
         }
         if (mostraForcasPaineis) {
-            graph.add(this.getLineStripsVetoresForcaPaineis());
+            graph.add(this.getLineStripsVetoresForcaPaineis(escalaForca));
         }
         view.setScaleX(new Scale(-this.estacao.dR,this.estacao.dR));
         view.setScaleY(new Scale(-this.estacao.dR,this.estacao.dR));

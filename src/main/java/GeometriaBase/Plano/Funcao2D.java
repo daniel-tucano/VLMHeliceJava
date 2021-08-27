@@ -54,13 +54,22 @@ public class Funcao2D extends Curva2D {
 
     public Funcao2D geraFuncaoIgualmenteEspacada( Integer nPontos ) {
 
-        List<Double> novoPontosX =  linspace(this.getPontosX().get(0), this.getPontosX().get(this.getPontosX().size() - 1), nPontos);
+        List<Double> novoPontosX =  linspace(this.pontosOrdemCrescente.get(0).x, this.getPontosOrdemCrescente().get(this.getPontosOrdemCrescente().size() - 1).x, nPontos);
         List<Double> novoPontosY = novoPontosX.stream().map(this.funcaoInterpoladora::value).collect(Collectors.toList());
         return new Funcao2D(novoPontosX, novoPontosY);
     }
 
     public Ponto2D obtemPontoInterpolado(Double x) {
         return new Ponto2D(this.eixoDeCoordenadas,x, this.funcaoInterpoladora.value(x));
+    }
+
+    public Direcao2D getDirecaoTangente(Double x) {
+        double anguloTangente = Math.atan(this.funcaoInterpoladora.derivative().value(x));
+        return new Direcao2D(this.eixoDeCoordenadas,Math.cos(anguloTangente), Math.sin(anguloTangente));
+    }
+
+    public Direcao2D getDirecaoNormal(Double x) {
+        return this.getDirecaoTangente(x).getDirecaoPerpendicular();
     }
 
     public Funcao2D subtraiCurvaY(Curva2D curva2D) {

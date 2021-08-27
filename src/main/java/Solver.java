@@ -24,12 +24,12 @@ import java.util.List;
 public class Solver {
     public static void main(String[] args) throws Exception {
         double fator = 1.4;
-        List<Ponto2D> pontosDistribuicaoDeCordaNormalizada = Arrays.asList(new Ponto2D(0.05,0.15*fator), new Ponto2D(0.15,0.16*fator), new Ponto2D(0.30,0.162*fator), new Ponto2D(0.45, 0.14*fator), new Ponto2D(0.7, 0.12*fator), new Ponto2D(0.9,0.07*fator), new Ponto2D(1.0, 0.012*fator));
-        List<Ponto2D> pontosDistribuicaoDeAnguloBetaNormalizada = Arrays.asList(new Ponto2D(0.05,3.0), new Ponto2D(0.15,10.0), new Ponto2D(0.30,35.0), new Ponto2D(0.45, 20.0), new Ponto2D(0.7, 10.0), new Ponto2D(0.9,8.0), new Ponto2D(1.0, 7.0));
+        List<Ponto2D> pontosDistribuicaoDeCordaNormalizada = Arrays.asList(new Ponto2D(0.05, 0.15 * fator), new Ponto2D(0.15, 0.16 * fator), new Ponto2D(0.30, 0.162 * fator), new Ponto2D(0.45, 0.14 * fator), new Ponto2D(0.7, 0.12 * fator), new Ponto2D(0.9, 0.07 * fator), new Ponto2D(1.0, 0.012 * fator));
+        List<Ponto2D> pontosDistribuicaoDeAnguloBetaNormalizada = Arrays.asList(new Ponto2D(0.05, 3.0), new Ponto2D(0.15, 10.0), new Ponto2D(0.30, 35.0), new Ponto2D(0.45, 20.0), new Ponto2D(0.7, 10.0), new Ponto2D(0.9, 8.0), new Ponto2D(1.0, 7.0));
         List<AerofolioPuro> aerofoliosPuros = Arrays.asList(new AerofolioPuro(AirfoilJSON.parseAirfoilJsonUrl(130, 0.0, "Xfoil")), new AerofolioPuro(AirfoilJSON.parseAirfoilJsonUrl(190, 0.0, "Xfoil")), new AerofolioPuro(AirfoilJSON.parseAirfoilJsonUrl(188, 0.0, "Xfoil")));
-        Integer numeroDeEstacoes = 25;
+        Integer numeroDeEstacoes = 50;
         Integer numeroDePas = 2;
-        List<Integer> indicesDosPerfisDeAerofolioPuro = Arrays.asList(0,15, 25);
+        List<Integer> indicesDosPerfisDeAerofolioPuro = Arrays.asList(0, 25, 50);
         Double raio = 0.12;
         Double raioHub = 0.008;
 //        aerofoliosPuros.get(0).plotAerofolio();
@@ -40,14 +40,14 @@ public class Solver {
 
 //        heliceTeste.pas.get(0).seccoesDeTrasicao.get(0).perfis.get(5).curvaCamber.plot(-raio,raio,-raio,raio,-raio,raio);
 
-        HelicePainel helicePainel = new HelicePainel(heliceTeste, 2, 20);
-        CondicaoDeOperacao condicaoDeOperacao = new CondicaoDeOperacao(10.0,12000.0, Fluidos.AR, raio*2);
+        HelicePainel helicePainel = new HelicePainel(heliceTeste, 4, 20);
+        CondicaoDeOperacao condicaoDeOperacao = new CondicaoDeOperacao(10.0, 12000.0, Fluidos.AR, raio * 2);
         PontoPerformanceHelice pontoPerformanceHelice = helicePainel.calculaPontoPerformanceHelice(condicaoDeOperacao);
-        helicePainel.plotPaineis(true,false,false,false, true, false);
-//        helicePainel.paineisPa.get(0).plotTracaoEstacao();
+        helicePainel.plotPaineis(true,true,true,false, true, true, 1.0);
+        helicePainel.paineisPa.get(0).plotTracaoEstacao();
         System.out.println(pontoPerformanceHelice.tracao);
         System.out.println(pontoPerformanceHelice.torque);
-//        SimpleMatrix AIM = helicePainel.geraAIM();
+        SimpleMatrix AIM = helicePainel.geraAIM();
     }
 
 }

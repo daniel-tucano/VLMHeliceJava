@@ -1,5 +1,6 @@
 package GeometriaBase.Espaco;
 
+import GeometriaBase.Plano.Vetor2DBase;
 import org.ejml.simple.SimpleMatrix;
 import org.jzy3d.colors.Color;
 import org.jzy3d.maths.Coord3d;
@@ -57,6 +58,12 @@ public abstract class Vetor3DBase {
         return new Vetor3D(this.matrizVetor.get(1)*vetor.matrizVetor.get(2) - this.matrizVetor.get(2)*vetor.matrizVetor.get(1),
                             this.matrizVetor.get(2)*vetor.matrizVetor.get(0) - this.matrizVetor.get(0)*vetor.matrizVetor.get(2),
                             this.matrizVetor.get(0)*vetor.matrizVetor.get(1) - this.matrizVetor.get(1)*vetor.matrizVetor.get(0));
+    }
+
+    public Vetor3D produtoVetorial(Vetor2DBase vetor) {
+        return new Vetor3D(this.matrizVetor.get(1)*vetor.matrizVetor.get(2) - this.matrizVetor.get(2)*vetor.matrizVetor.get(1),
+                this.matrizVetor.get(2)*vetor.matrizVetor.get(0) - this.matrizVetor.get(0)*vetor.matrizVetor.get(2),
+                this.matrizVetor.get(0)*vetor.matrizVetor.get(1) - this.matrizVetor.get(1)*vetor.matrizVetor.get(0));
     }
 
     public Double produtoEscalar(Vetor3DBase vetor) {

@@ -40,6 +40,18 @@ public class Ponto2D {
         return Math.sqrt(x*x + y*y);
     }
 
+    public Double getDistanciaAPonto(Ponto2D ponto) {
+        return this.subtraiPonto(ponto).getDistanciaDaOrigem();
+    }
+
+    /**
+    * Em t = 1 o ponto retornado possui as mesmas coordenadas do ponto fornecido, em
+    * t =  0 o ponto retornado possui as mesmas coordenadas da instancia que chamou o
+    * método. Valores intermediários retornam coordenadas itermediárias*/
+    public Ponto2D getPontoInterpolado(Ponto2D ponto, Double t) {
+        return new Ponto2D(ponto.x*t + this.x*(t-1), ponto.y*t + this.y*(t-1));
+    }
+
     public Ponto3D descrevePontoEmEixoDeCoordenadasPrincipal() {
         return this.converteEmPonto3D().descrevePontoEmEixoDeCoordenadasPrincipal();
     }
@@ -52,8 +64,8 @@ public class Ponto2D {
         return new Ponto3D(this.eixoDeCoordenadas,this.x,this.y,0.0);
     }
 
-    public SimpleMatrix converteEmMatrizColuna() {
-        return new SimpleMatrix(3,1,false,new double[] {this.x, this.y,0.0});
+    public SimpleMatrix converteParaVetorColuna() {
+        return new SimpleMatrix(3,1,false,new double[] {this.x, this.y, 0.0});
     }
 
     public boolean equals(Ponto2D ponto) {

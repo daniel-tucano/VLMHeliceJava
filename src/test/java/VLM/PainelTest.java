@@ -1,9 +1,6 @@
 package VLM;
 
-import GeometriaBase.Espaco.Curva3D;
-import GeometriaBase.Espaco.EixoDeCoordenadas3D;
-import GeometriaBase.Espaco.Ponto3D;
-import GeometriaBase.Espaco.Vetor3D;
+import GeometriaBase.Espaco.*;
 import junit.framework.TestCase;
 import org.ejml.simple.SimpleMatrix;
 import org.junit.Assert;
@@ -17,8 +14,8 @@ public class PainelTest extends TestCase {
     public Ponto3D translacaoPlaca1ParaPlaca2 = new Ponto3D(5.0, 5.0, 0.0);
     public Curva3D pontosVorticePernaEsquerdaPlaca1 = new Curva3D(Arrays.asList( new Ponto3D(3.0,5.25, 0.0), new Ponto3D(3.0, 1.0,0.0)));
     public Curva3D pontosVorticePernaDiretaPlaca1 = pontosVorticePernaEsquerdaPlaca1.transladaPontos(new Ponto3D(3.0,0.0,0.0));
-    public Painel painel1 = new Painel(pontosPlaca1.pontos, null, null, new VorticeFerradura(5.0, pontosVorticePernaEsquerdaPlaca1.pontos, pontosVorticePernaDiretaPlaca1.pontos), EixoDeCoordenadas3D.eixoDeCoordenadasPrincipal);
-    public Painel painel2 = new Painel(pontosPlaca1.transladaPontos(translacaoPlaca1ParaPlaca2).pontos, null, null, new VorticeFerradura(7.0, pontosVorticePernaEsquerdaPlaca1.transladaPontos(translacaoPlaca1ParaPlaca2).pontos, pontosVorticePernaDiretaPlaca1.transladaPontos(translacaoPlaca1ParaPlaca2).pontos), EixoDeCoordenadas3D.eixoDeCoordenadasPrincipal);
+    public Painel painel1 = new Painel(pontosPlaca1.pontos, Direcoes3D.Z, null, null, new VorticeFerradura(5.0, pontosVorticePernaEsquerdaPlaca1.pontos, pontosVorticePernaDiretaPlaca1.pontos), EixoDeCoordenadas3D.eixoDeCoordenadasPrincipal);
+    public Painel painel2 = new Painel(pontosPlaca1.transladaPontos(translacaoPlaca1ParaPlaca2).pontos, Direcoes3D.Z, null, null, new VorticeFerradura(7.0, pontosVorticePernaEsquerdaPlaca1.transladaPontos(translacaoPlaca1ParaPlaca2).pontos, pontosVorticePernaDiretaPlaca1.transladaPontos(translacaoPlaca1ParaPlaca2).pontos), EixoDeCoordenadas3D.eixoDeCoordenadasPrincipal);
 
     public void testCalculaInfluenciaDeOutroPainelNessePainel() {
         double influenciaPainel2EmPainel1 = painel1.calculaInfluenciaDeOutroPainelNessePainel(painel2);

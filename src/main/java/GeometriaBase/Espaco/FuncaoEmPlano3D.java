@@ -25,4 +25,8 @@ public class FuncaoEmPlano3D extends Curva3D {
         Ponto2D pontoInterpolado = this.funcao2D.obtemPontoInterpolado(xEmCoordenadasDoPlano);
         return pontoInterpolado.descrevePontoEmEixoDeCoordenadasPrincipal();
     }
+
+    public Vetor3D getDirecaoNormalEmEixoDeCoordenadasPrincipal(Double xEmCoordenadasDoPlano) {
+        return this.funcao2D.getDirecaoNormal(xEmCoordenadasDoPlano).descreveVetorEmEixoDeCoordenadasPrincipal();
+    }
 }

@@ -16,6 +16,11 @@ public class Direcao3D extends Vetor3DBase {
         super( normalizaCoordenadas(componenteX,componenteY,componenteZ));
     }
 
+    public Direcao3D inverteSentido() {
+        this.matrizVetor = this.matrizVetor.scale(-1.0);
+        return this;
+    }
+
     public Direcao3D getDirecaoPerpendicular() {
         double escala = Math.sqrt(1+this.matrizVetor.get(0)*this.matrizVetor.get(0)/(this.matrizVetor.get(2)*this.matrizVetor.get(2)));
         return new Direcao3D(1/escala,0.0,(-this.matrizVetor.get(0)/this.matrizVetor.get(2))/escala);

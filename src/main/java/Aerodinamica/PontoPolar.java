@@ -1,7 +1,5 @@
 package Aerodinamica;
 
-import com.sun.jdi.DoubleValue;
-
 public class PontoPolar {
     public Double alpha;
     public Double cl;

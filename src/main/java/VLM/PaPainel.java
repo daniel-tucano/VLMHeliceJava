@@ -90,9 +90,9 @@ public class PaPainel {
         return lineStrips;
     }
 
-    public List<LineStrip> getLineStripsVetoresForcaPaineis() {
+    public List<LineStrip> getLineStripsVetoresForcaPaineis(Double escala) {
         List<LineStrip> lineStrips = new ArrayList<>();
-        this.paineisEstacoes.forEach(est -> lineStrips.addAll(est.getLineStripsVetoresForcaPaineis()));
+        this.paineisEstacoes.forEach(est -> lineStrips.addAll(est.getLineStripsVetoresForcaPaineis(escala)));
         return lineStrips;
     }
 
@@ -102,7 +102,7 @@ public class PaPainel {
         return lineStrips;
     }
 
-    public void plotPaineis(boolean wireframeDisplayed, boolean mostraVortices, boolean mostraVelocidadesLocais, boolean mostraForcasPaineis) {
+    public void plotPaineis(boolean wireframeDisplayed, boolean mostraVortices, boolean mostraVelocidadesLocais, boolean mostraForcasPaineis, Double escalaForca) {
         AWTChart chart = new AWTChart(Quality.Fastest);
         AWTView view = chart.getAWTView();
         Graph graph = chart.getScene().getGraph();
@@ -114,7 +114,7 @@ public class PaPainel {
             graph.add(this.getLineStripsVelocidadeLocalUmQuartoDoPainel());
         }
         if (mostraForcasPaineis) {
-            graph.add(this.getLineStripsVetoresForcaPaineis());
+            graph.add(this.getLineStripsVetoresForcaPaineis(escalaForca));
         }
         view.setScaleX(new Scale(-this.pa.raio/2,this.pa.raio/2));
         view.setScaleY(new Scale(-this.pa.raio/2,this.pa.raio/2));
@@ -129,9 +129,9 @@ public class PaPainel {
         XYChart chart = QuickChart.getChart("plot", "Estacao", "Tracao [N]", "Tração x estacao"
                 , IntStream.range(0, this.pa.numeroDeEstacoes).mapToObj(a -> (double) a).collect(Collectors.toList())
                 , tracoesEstacoes);
-        chart.getStyler().setXAxisMax(0.0);
-        chart.getStyler().setXAxisMin(this.pa.numeroDeEstacoes.doubleValue());
-        chart.getStyler().setYAxisMin(minTracaoEstacao > 0.0 ? minTracaoEstacao : 0.0);
+        chart.getStyler().setXAxisMin(0.0);
+        chart.getStyler().setXAxisMax(this.pa.numeroDeEstacoes.doubleValue());
+        chart.getStyler().setYAxisMin(minTracaoEstacao < 0.0 ? minTracaoEstacao : 0.0);
         chart.getStyler().setYAxisMax(maxTracaoEstacao > 0.3 ? maxTracaoEstacao : 0.3);
         new SwingWrapper(chart).displayChart();
     }

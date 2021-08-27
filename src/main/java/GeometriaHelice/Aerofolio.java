@@ -6,8 +6,8 @@ import GeometriaBase.Plano.Funcao2D;
 import GeometriaBase.Plano.Geometria2D;
 
 public class Aerofolio {
-    public EixoDeCoordenadas3D eixoDeCoordenadas = EixoDeCoordenadas3D.eixoDeCoordenadasPrincipal;
-    public EixoDeCoordenadas3D eixoDeCoordenadasDeRotacao = EixoDeCoordenadas3D.eixoDeCoordenadasEixoDeRotacao;
+    public EixoDeCoordenadas3D eixoDeCoordenadas;
+    public EixoDeCoordenadas3D eixoDeCoordenadasDeRotacao;
     public AerofolioBase aerofolioBase;
     public Double corda;
     public Double anguloBeta;
@@ -50,10 +50,6 @@ public class Aerofolio {
                             .setEixoDeCoordenadas(this.eixoDeCoordenadas)
         );
     }
-
-//    public Ponto3D getPontoCurvaCamberNoEspaco(Double porcentagemDaCorda) {
-//
-//    }
 
     public void plotAerofolio() throws Exception {
         geometria.plot();

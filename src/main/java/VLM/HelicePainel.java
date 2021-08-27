@@ -81,7 +81,6 @@ public class HelicePainel {
                     matrizRHS.set( iPainel + iEstacao*this.numeroDePaineisPorEstacao + iPa*numeroDePaineisPa,0,
                             -painelAtual
                                     .vetorNormal
-                                    .direcao
                                     .produtoEscalar(
                                             campoVetorialEscoamentoIntocadoHelice.getVelocidadeEscoamentoIntocado(
                                                     painelAtual.pontoDeControle
@@ -100,7 +99,7 @@ public class HelicePainel {
     public PontoPerformanceHelice calculaPontoPerformanceHelice(CondicaoDeOperacao condicaoDeOperacao) {
         this.setEsteira(condicaoDeOperacao);
         CampoVetorialEscoamentoIntocadoHelice campoVetorialEscoamentoIntocadoHelice = new CampoVetorialEscoamentoIntocadoHelice(condicaoDeOperacao);
-        SimpleMatrix matrizGama = this.geraMatrizRHS(condicaoDeOperacao).solve(this.geraAIM());
+        SimpleMatrix matrizGama = this.geraAIM().solve(this.geraMatrizRHS(condicaoDeOperacao));
         int numeroDePaineisPa = this.helice.pas.get(0).numeroDeEstacoes*this.numeroDePaineisPorEstacao;
         IntStream.range(0,this.helice.nPas).forEach(iPa -> {
             IntStream.range(0,this.helice.pas.get(iPa).numeroDeEstacoes).forEach(iEstacao -> {
@@ -193,9 +192,9 @@ public class HelicePainel {
         return lineStrips;
     }
 
-    public List<LineStrip> getLineStripsVetoresForcaPaineis() {
+    public List<LineStrip> getLineStripsVetoresForcaPaineis(Double escala) {
         List<LineStrip> lineStrips = new ArrayList<>();
-        this.paineisPa.forEach(pa -> lineStrips.addAll(pa.getLineStripsVetoresForcaPaineis()));
+        this.paineisPa.forEach(pa -> lineStrips.addAll(pa.getLineStripsVetoresForcaPaineis(escala)));
         return lineStrips;
     }
 
@@ -205,7 +204,7 @@ public class HelicePainel {
         return  lineStrips;
     }
 
-    public AWTChart getChart(boolean wireframeDisplayed, boolean mostraVortices, boolean mostraPontosDeControle, boolean mostraVetoresNormais, boolean mostraVelocidadesLocais, boolean mostraForcasPaineis) {
+    public AWTChart getChart(boolean wireframeDisplayed, boolean mostraVortices, boolean mostraPontosDeControle, boolean mostraVetoresNormais, boolean mostraVelocidadesLocais, boolean mostraForcasPaineis, Double escalaForca) {
         AWTChart chart = new AWTChart(Quality.Fastest);
         AWTView view = chart.getAWTView();
         Graph graph = chart.getScene().getGraph();
@@ -222,7 +221,7 @@ public class HelicePainel {
             graph.add(this.getLineStripsVelocidadeLocalUmQuartoDoPainel());
         }
         if (mostraForcasPaineis) {
-            graph.add(this.getLineStripsVetoresForcaPaineis());
+            graph.add(this.getLineStripsVetoresForcaPaineis(escalaForca));
         }
         graph.add(this.getPaineisHelice(wireframeDisplayed));
         view.setScaleX(new Scale(-this.helice.raio,this.helice.raio));
@@ -231,7 +230,7 @@ public class HelicePainel {
         return chart;
     }
 
-    public void plotPaineis(boolean wireframeDisplayed, boolean mostraVortices, boolean mostraPontosDeControle, boolean mostraVetoresNormais, boolean mostraVelocidadesLocais, boolean mostraForcasPaineis) {
-        ChartLauncher.openChart(this.getChart(wireframeDisplayed, mostraVortices, mostraPontosDeControle, mostraVetoresNormais, mostraVelocidadesLocais, mostraForcasPaineis));
+    public void plotPaineis(boolean wireframeDisplayed, boolean mostraVortices, boolean mostraPontosDeControle, boolean mostraVetoresNormais, boolean mostraVelocidadesLocais, boolean mostraForcasPaineis, Double escalaForca) {
+        ChartLauncher.openChart(this.getChart(wireframeDisplayed, mostraVortices, mostraPontosDeControle, mostraVetoresNormais, mostraVelocidadesLocais, mostraForcasPaineis, escalaForca));
     }
 }

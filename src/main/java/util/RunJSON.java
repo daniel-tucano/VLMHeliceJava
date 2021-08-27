@@ -32,16 +32,16 @@ public class RunJSON {
     public static RunJSON parseRunJsonUrl(int runId) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        return mapper.readValue(new URL("https://backend.aero-db.com/runs/"+runId), RunJSON.class);
+        return mapper.readValue(new URL("http://localhost:8081/runs/"+runId), RunJSON.class);
     }
 
     public static List<RunJSON> parseRunJsonUrl(Integer airfoilId, String source, Double maxMach) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        PaginatedEntity<RunJSON> runsPage = mapper.readValue(new URL(String.format("https://backend.aero-db.com/runs?$filter=airfoilID eq %d and substringof('%s',source) and mach le %s&estimatedDocumentCount=false", airfoilId, source, maxMach).replace(" ","%20")), new TypeReference<PaginatedEntity<RunJSON>>() {});
+        PaginatedEntity<RunJSON> runsPage = mapper.readValue(new URL(String.format("http://localhost:8081/runs?$filter=airfoilID eq %d and substringof('%s',source) and mach le %s&estimatedDocumentCount=false", airfoilId, source, maxMach).replace(" ","%20")), new TypeReference<PaginatedEntity<RunJSON>>() {});
         List<RunJSON> runResponse = new ArrayList<RunJSON>(runsPage.docs);
         while (runsPage.hasNext) {
-            runsPage = mapper.readValue(new URL(String.format("https://backend.aero-db.com/runs?$filter=airfoilID eq %d and substringof('%s',source) and mach le %s&estimatedDocumentCount=false&page=%d", airfoilId, source, maxMach,runsPage.nextPage).replace(" ","%20")), new TypeReference<PaginatedEntity<RunJSON>>() {});
+            runsPage = mapper.readValue(new URL(String.format("http://localhost:8081/runs?$filter=airfoilID eq %d and substringof('%s',source) and mach le %s&estimatedDocumentCount=false&page=%d", airfoilId, source, maxMach,runsPage.nextPage).replace(" ","%20")), new TypeReference<PaginatedEntity<RunJSON>>() {});
             runResponse.addAll(runsPage.docs);
         };
         return runResponse;

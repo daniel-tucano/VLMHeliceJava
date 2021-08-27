@@ -56,7 +56,7 @@ public class AirfoilJSON {
     public static AirfoilJSON parseAirfoilJsonUrl(Integer airfoilId) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        AirfoilJSON airfoilJSON = mapper.readValue(new URL("https://backend.aero-db.com/airfoils/"+airfoilId), AirfoilJSON.class);
+        AirfoilJSON airfoilJSON = mapper.readValue(new URL("http://localhost:8081/airfoils/"+airfoilId), AirfoilJSON.class);
         for (Integer runId: airfoilJSON.runs.runIDs) {
             airfoilJSON.runJSONS.add( RunJSON.parseRunJsonUrl(runId) );
         }
@@ -66,7 +66,7 @@ public class AirfoilJSON {
     public static AirfoilJSON parseAirfoilJsonUrl(Integer airfoilId, Double maxMach, String source) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        AirfoilJSON airfoilJSON = mapper.readValue(new URL("https://backend.aero-db.com/airfoils/"+airfoilId), AirfoilJSON.class);
+        AirfoilJSON airfoilJSON = mapper.readValue(new URL("http://localhost:8081/airfoils/"+airfoilId), AirfoilJSON.class);
         airfoilJSON.runJSONS.addAll( RunJSON.parseRunJsonUrl(airfoilId,source,maxMach) );
         return airfoilJSON;
     }

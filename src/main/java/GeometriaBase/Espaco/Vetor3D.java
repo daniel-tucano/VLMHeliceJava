@@ -87,6 +87,12 @@ public class Vetor3D extends Vetor3DBase {
         this.posicao = new Ponto3D(0.0, 0.0, 0.0);
     }
 
+    public Vetor3D inverteSentido() {
+        this.matrizVetor = this.matrizVetor.scale(-1.0);
+        this.direcao = this.direcao.inverteSentido();
+        return this;
+    }
+
     public Vetor3D setComponenteX(double componenteX) {
         return new Vetor3D(this.eixoDeCoordenadas, new SimpleMatrix(new double[][]{{componenteX},{this.matrizVetor.get(1)},{this.matrizVetor.get(2)}}));
     }
@@ -97,6 +103,10 @@ public class Vetor3D extends Vetor3DBase {
 
     public Vetor3D setComponenteZ(double componenteZ) {
         return new Vetor3D(this.eixoDeCoordenadas, new SimpleMatrix(new double[][]{{this.matrizVetor.get(0)},{this.matrizVetor.get(1)},{componenteZ}}));
+    }
+
+    public Vetor3D setPosicao(Ponto3D novaPosicao) {
+        return new Vetor3D(this.matrizVetor, novaPosicao);
     }
 
     public Vetor3D escala(Double fatorDeEscala) {

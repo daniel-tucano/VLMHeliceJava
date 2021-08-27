@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  aerodb:
+    image: 'aerodb-backend'
+    depends_on:
+      - aerodb-mongo
+    ports:
+      - 8081:8081
+    environment:
+      MONGO_URL: mongodb://aerodb-mongo:27017/aerodb
+
+  aerodb-mongo:
+    image: 'mongo'
+    volumes:
+      - /home/daniel/aerodb-mongo-data:/data/db
+    ports:
+      - 27017:27017

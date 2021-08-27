@@ -6,6 +6,8 @@ import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,6 +93,36 @@ public class Curva2D {
 
     public Ponto2D pontoMaximoY() {
         return this.pontos.stream().max((p1,p2) -> Double.compare(p1.y, p2.y)).get();
+    }
+
+    public Double getComprimentoDaCurva() {
+        return IntStream.range(0,this.pontos.size()-2)
+                .mapToObj(index -> {
+                    return  this.pontos.get(index).getDistanciaAPonto(this.pontos.get(index + 1));
+                }).reduce(Double::sum).get();
+    }
+
+    public Direcao2D getDirecaoTangente(
+            @NotNull
+            @Min(value = 0)
+            Integer index
+    ) {
+        if (index == 0) {
+            return new Vetor2D(this.pontos.get(1),this.pontos.get(0)).direcao;
+        } else if (index == this.pontos.size() - 1) {
+            return new Vetor2D(this.pontos.get(this.pontos.size()-1), this.pontos.get(this.pontos.size()-2), this.pontos.get(this.pontos.size()-2)).direcao;
+        } else {
+            return new Vetor2D(this.pontos.get(index), this.pontos.get(index - 1))
+                    .somaVetor(new Vetor2D(this.pontos.get(index + 1), this.pontos.get(index))).direcao;
+        }
+    }
+
+    public Direcao2D getDirecaoNormal(
+            @NotNull
+            @Min(value = 0)
+            Integer index
+    ) {
+        return this.getDirecaoTangente(index).getDirecaoPerpendicular();
     }
 
     public Curva2D transladaPontos(Double translacaoEmX, Double translacaoEmY) {
